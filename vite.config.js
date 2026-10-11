@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Relative asset paths so the built site works from any folder or static host.
-  base: './',
+  // Use root-relative asset URLs so the deployed app resolves images, favicon, and previews correctly on Vercel.
+  base: '/',
 });
