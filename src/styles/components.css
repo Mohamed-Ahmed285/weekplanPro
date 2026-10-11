@@ -122,6 +122,9 @@
 }
 
 /* ---------- Week grid ---------- */
+.grid {
+  zoom: 0.8;
+}
 
 .grid__corner,
 .grid__day {
