@@ -58,3 +58,7 @@ select {
     transition: none !important;
   }
 }
+
+[hidden] {
+  display: none !important;
+}

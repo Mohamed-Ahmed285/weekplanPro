@@ -25,6 +25,10 @@
 </head>
 
 <body>
+  <div id="boot" class="boot"><p>Loading…</p></div>
+  <main id="auth-screen" class="auth" hidden></main>
+
+  <div id="app" hidden>
   <div class="topbar-contanier">
     <!-- Top bar -->
     <header class="topbar">
@@ -36,6 +40,10 @@
         </div>
       </div>
       <div class="topbar__actions">
+        <div class="user-box">
+          <span class="user-box__email" id="user-email"></span>
+          <button type="button" class="user-box__status" id="save-status" data-status="saved"></button>
+        </div>
         <button type="button" class="btn btn--green" data-action="settings">&#9881; Settings</button>
         <button type="button" class="btn btn--pink" data-action="clear-week">Clear Week</button>
         <button type="button" class="btn btn--white" data-action="export">Export JSON</button>
@@ -43,6 +51,7 @@
           Import
           <input type="file" id="import-file" accept=".json,application/json" hidden />
         </label>
+        <button type="button" class="btn btn--white" data-action="logout">Log out</button>
       </div>
     </header>
   </div>
@@ -95,8 +104,7 @@
       </aside>
     </div>
   </div>
-
-
+  </div>
 
   <!-- Slot picker -->
   <dialog id="assign-dialog" aria-labelledby="modal-title">
