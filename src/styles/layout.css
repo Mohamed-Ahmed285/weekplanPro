@@ -34,7 +34,7 @@
 }
 
 .topbar__sub {
-  /* margin-top: 4px; */
+  margin-top: 4px;
   font-size: 0.8rem;
 }
 
@@ -260,7 +260,7 @@
 
   .topbar__title {
     font-size: 1.5rem;
-    justify-content: center;
+    /* justify-content: center; */
   }
 
   .topbar__title img {
@@ -316,7 +316,7 @@
     display: flex;
   }
 
-  .topbar__menu > * {
+  .topbar__menu>* {
     width: 100%;
   }
 
