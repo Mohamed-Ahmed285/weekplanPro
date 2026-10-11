@@ -1,8 +1,26 @@
 # WeekPlan Pro
 
-Weekly planner with login. Each user's tasks, schedule and settings are saved to their own account (Supabase).
+Plan your week hour by hour. Create reusable tasks, drag them into time slots,
+and see how your hours split across categories.
 
-## 1. Set up Supabase (free, ~5 minutes)
+**Live demo:** [HERE](https://weekplan-ten.vercel.app/)
+
+## Features
+- Drag-and-drop weekly grid (or click a slot to assign a task)
+- Customizable day range: pick any start and end hour, including past midnight
+- Up to 4 custom categories with your own names and colors, plus live hour totals
+- Email/password login with password reset (Supabase Auth)
+- Each user's tasks, schedule and settings saved to their own account, with row-level security
+- Export and import your schedule as JSON
+- Neo-brutalist UI
+
+## Tech stack
+Vanilla JavaScript (ES modules), Vite, Supabase (Auth + Postgres), Vercel
+
+## Getting started
+See Setup below for the Supabase and Vercel steps.
+
+## 1. Setup Supabase (free, ~5 minutes)
 
 1. Create a project at https://supabase.com.
 2. **SQL Editor → New query**, paste the contents of `supabase/schema.sql`, click **Run**.
