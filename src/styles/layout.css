@@ -1,5 +1,5 @@
-.app {
-  padding: 13px 56px 20px;
+.topbar-contanier {
+  padding: 13px 56px 15px;
   background-color: #fff;
   border-bottom: solid 4px #1e2939;
 }
@@ -13,7 +13,6 @@
   justify-content: space-between;
   gap: 16px;
   /* margin-bottom: 28px; */
-
 }
 
 .topbar__title {
@@ -24,8 +23,18 @@
   gap: 10px;
 }
 
+.topbar__title img {
+  width: 120px;
+
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+}
+
 .topbar__sub {
-  margin-top: 4px;
+  /* margin-top: 4px; */
   font-size: 0.8rem;
 }
 
@@ -150,7 +159,7 @@
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1300px) {
-  .app {
+  .container {
     padding: 20px 20px 12px;
   }
 
@@ -201,7 +210,7 @@
 }
 
 @media (max-width: 560px) {
-  .app {
+  .container {
     padding: 16px 14px 40px;
   }
 
