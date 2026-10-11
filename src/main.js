@@ -1,0 +1,177 @@
+import { createStore } from './store.js';
+import { renderStats } from './components/stats.js';
+import { renderGrid } from './components/grid.js';
+import { renderTaskPool } from './components/taskPool.js';
+import { initTaskForm } from './components/taskForm.js';
+import { openAssignModal, closeModal } from './components/modal.js';
+import { showToast } from './components/toast.js';
+import { downloadJson, readJsonFile } from './utils/file.js';
+import { slotKey } from './store.js';
+
+const store = createStore();
+
+const $ = (id) => document.getElementById(id);
+const els = {
+  stats: $('stats'),
+  grid: $('grid'),
+  pool: $('task-pool'),
+  count: $('task-count'),
+  form: $('task-form'),
+  dialog: $('assign-dialog'),
+  importFile: $('import-file'),
+};
+
+/* ---------- Rendering ---------- */
+
+function render(state) {
+  renderStats(els.stats, state);
+  renderGrid(els.grid, state);
+  renderTaskPool(els.pool, els.count, state);
+}
+
+store.subscribe(render);
+render(store.getState());
+
+/* ---------- Actions ---------- */
+
+function assign(day, hour, taskId) {
+  store.assign(day, hour, taskId);
+  showToast(taskId ? 'Schedule updated' : 'Slot cleared');
+}
+
+function openSlot(slot) {
+  const { day, hour } = slot.dataset;
+  const { tasks, schedule } = store.getState();
+  openAssignModal({
+    day,
+    hour: Number(hour),
+    tasks,
+    currentTaskId: schedule[slotKey(day, Number(hour))],
+  });
+}
+
+/* ---------- Task form ---------- */
+
+initTaskForm(els.form, (task) => {
+  store.addTask(task);
+  showToast('Task created');
+});
+
+/* ---------- Task pool: delete + drag source ---------- */
+
+els.pool.addEventListener('click', (e) => {
+  const button = e.target.closest('[data-delete-task]');
+  if (!button) return;
+  store.deleteTask(button.dataset.deleteTask);
+  showToast('Task deleted');
+});
+
+els.pool.addEventListener('dragstart', (e) => {
+  const card = e.target.closest('[data-task-id]');
+  if (!card) return;
+  e.dataTransfer.setData('text/plain', card.dataset.taskId);
+  e.dataTransfer.effectAllowed = 'copy';
+  card.classList.add('is-dragging');
+});
+
+els.pool.addEventListener('dragend', (e) => {
+  e.target.closest('[data-task-id]')?.classList.remove('is-dragging');
+});
+
+/* ---------- Grid: click, keyboard, drop target ---------- */
+
+els.grid.addEventListener('click', (e) => {
+  const slot = e.target.closest('.slot');
+  if (!slot) return;
+
+  if (e.target.closest('[data-clear]')) {
+    assign(slot.dataset.day, Number(slot.dataset.hour), null);
+    return;
+  }
+  openSlot(slot);
+});
+
+els.grid.addEventListener('keydown', (e) => {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  // Ignore keys pressed on the inner "remove" button.
+  if (!e.target.classList.contains('slot')) return;
+  e.preventDefault();
+  openSlot(e.target);
+});
+
+els.grid.addEventListener('dragover', (e) => {
+  const slot = e.target.closest('.slot');
+  if (!slot) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'copy';
+  slot.classList.add('is-over');
+});
+
+els.grid.addEventListener('dragleave', (e) => {
+  const slot = e.target.closest('.slot');
+  if (slot && !slot.contains(e.relatedTarget)) slot.classList.remove('is-over');
+});
+
+els.grid.addEventListener('drop', (e) => {
+  const slot = e.target.closest('.slot');
+  if (!slot) return;
+  e.preventDefault();
+  const taskId = e.dataTransfer.getData('text/plain');
+  if (taskId) assign(slot.dataset.day, Number(slot.dataset.hour), taskId);
+});
+
+/* ---------- Assignment dialog ---------- */
+
+els.dialog.addEventListener('click', (e) => {
+  // Click on the backdrop (the <dialog> element itself) or a close button.
+  if (e.target === els.dialog || e.target.closest('[data-close]')) {
+    closeModal();
+    return;
+  }
+
+  const { day, hour } = els.dialog.dataset;
+  const pick = e.target.closest('[data-pick]');
+
+  if (pick) {
+    assign(day, Number(hour), pick.dataset.pick);
+    closeModal();
+  } else if (e.target.closest('[data-clear-slot]')) {
+    assign(day, Number(hour), null);
+    closeModal();
+  }
+});
+
+/* ---------- Header actions ---------- */
+
+document.querySelector('[data-action="clear-week"]').addEventListener('click', () => {
+  if (confirm('Are you sure you want to clear your entire weekly schedule?')) {
+    store.clearSchedule();
+    showToast('Weekly schedule cleared');
+  }
+});
+
+document.querySelector('[data-action="export"]').addEventListener('click', () => {
+  const { tasks, schedule } = store.getState();
+  downloadJson({ tasks, schedule }, `weekly-schedule-${new Date().toISOString().slice(0, 10)}.json`);
+  showToast('Schedule exported');
+});
+
+els.importFile.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  try {
+    const data = await readJsonFile(file);
+    const valid =
+      data && Array.isArray(data.tasks) && data.schedule && typeof data.schedule === 'object';
+    if (!valid) {
+      alert('Invalid file format.');
+    } else {
+      store.replaceAll({ tasks: data.tasks, schedule: data.schedule });
+      showToast('Schedule imported');
+    }
+  } catch {
+    alert('Failed to parse JSON file.');
+  }
+  e.target.value = '';
+});

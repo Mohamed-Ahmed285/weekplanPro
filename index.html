@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WeekPlan Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./src/styles/index.css" />
+  </head>
+  <body>
+    <div class="app">
+      <!-- Top bar -->
+      <header class="topbar">
+        <div>
+          <h1 class="topbar__title">WeekPlan <span class="tag">Pro</span></h1>
+          <p class="topbar__sub">Organize your hours, optimize your week.</p>
+        </div>
+        <div class="topbar__actions">
+          <button type="button" class="btn btn--pink" data-action="clear-week">Clear Week</button>
+          <button type="button" class="btn btn--white" data-action="export">Export JSON</button>
+          <label class="btn">
+            Import
+            <input type="file" id="import-file" accept=".json,application/json" hidden />
+          </label>
+        </div>
+      </header>
+
+      <div class="layout">
+        <!-- Weekly board -->
+        <main class="panel board">
+          <div class="stats" id="stats" aria-label="Hours per category"></div>
+          <div class="grid-wrap">
+            <div class="grid" id="grid"></div>
+          </div>
+        </main>
+
+        <!-- Task toolbox -->
+        <aside class="panel sidebar">
+          <div class="sidebar__section">
+            <h2 class="sidebar__title">
+              Task Toolbox <span class="chip" style="--chip: var(--green)" id="task-count">0</span>
+            </h2>
+            <p class="muted">Create reusable tasks, then drag them into time slots.</p>
+
+            <form id="task-form" class="form" autocomplete="off">
+              <div class="field">
+                <label for="task-title">Title</label>
+                <input class="input" id="task-title" name="title" required maxlength="60" placeholder="Deep Work, Gym..." />
+              </div>
+              <div class="field">
+                <label for="task-category">Category</label>
+                <select class="input" id="task-category" name="category"></select>
+              </div>
+              <div class="field">
+                <span class="field__label" id="color-label">Color</span>
+                <div class="swatches" id="swatches" role="radiogroup" aria-labelledby="color-label"></div>
+              </div>
+              <button type="submit" class="btn btn--green btn--block">+ Add Task</button>
+            </form>
+          </div>
+
+          <div class="sidebar__section sidebar__section--grow">
+            <h3 class="sidebar__subtitle">
+              Available Tasks <span class="muted">Drag or click a slot</span>
+            </h3>
+            <div class="pool" id="task-pool"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- Slot picker -->
+    <dialog id="assign-dialog" aria-labelledby="modal-title">
+      <div class="panel dialog__panel">
+        <div class="dialog__head">
+          <h3 id="modal-title" data-modal-title>Assign task</h3>
+          <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+        </div>
+        <p class="muted">Pick a task for this slot.</p>
+        <div class="dialog__list" data-modal-list></div>
+      </div>
+    </dialog>
+
+    <!-- Toast -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span data-toast-msg></span>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

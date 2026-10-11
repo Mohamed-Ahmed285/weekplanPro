@@ -1,0 +1,22 @@
+:root {
+  /* Palette */
+  --ink: #000;
+  --paper: #fff;
+  --bg: #f4f4f4;
+  --yellow: #ffe600;
+  --green: #00f58a;
+  --blue: #3b82f6;
+  --pink: #ff6bd6;
+  --orange: #ff8a3d;
+
+  /* Borders & hard shadows */
+  --bw: 3px;
+  --bw-thin: 2px;
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-lg: 8px 8px 0 var(--ink);
+
+  /* Type */
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+}
