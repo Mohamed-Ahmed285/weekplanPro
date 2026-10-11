@@ -1,28 +1,7 @@
-import { DEFAULT_TASKS, STORAGE_KEYS } from './constants.js';
+import { DEFAULT_TASKS } from './constants.js';
 import { DEFAULT_SETTINGS, normalizeSettings, normalizeTasks } from './settings.js';
 
 export const slotKey = (day, hour) => `${day}-${hour}`;
-
-function load(key, fallback, isValid) {
-  try {
-    const raw = localStorage.getItem(key);
-    if (!raw) return fallback;
-    const value = JSON.parse(raw);
-    return isValid(value) ? value : fallback;
-  } catch {
-    return fallback;
-  }
-}
-
-function persist({ tasks, schedule, settings }) {
-  try {
-    localStorage.setItem(STORAGE_KEYS.tasks, JSON.stringify(tasks));
-    localStorage.setItem(STORAGE_KEYS.schedule, JSON.stringify(schedule));
-    localStorage.setItem(STORAGE_KEYS.settings, JSON.stringify(settings));
-  } catch {
-    // Storage can be unavailable (private mode, quota). The app still works in memory.
-  }
-}
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -30,18 +9,18 @@ const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
  * Tiny observable store. State is treated as immutable:
  * every action builds a new object and notifies subscribers.
  */
-export function createStore() {
-  const settings = normalizeSettings(load(STORAGE_KEYS.settings, DEFAULT_SETTINGS, isObject));
+export function createStore(initial, onChange = () => {}) {
+  const settings = normalizeSettings(initial?.settings ?? DEFAULT_SETTINGS);
   let state = {
-    tasks: normalizeTasks(load(STORAGE_KEYS.tasks, DEFAULT_TASKS, Array.isArray), settings.categories),
-    schedule: load(STORAGE_KEYS.schedule, {}, isObject),
+    tasks: normalizeTasks(Array.isArray(initial?.tasks) ? initial.tasks : DEFAULT_TASKS, settings.categories),
+    schedule: isObject(initial?.schedule) ? initial.schedule : {},
     settings,
   };
   const listeners = new Set();
 
   const commit = (next) => {
     state = next;
-    persist(state);
+    onChange(state);
     listeners.forEach((fn) => fn(state));
   };
 

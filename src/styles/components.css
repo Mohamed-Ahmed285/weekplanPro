@@ -724,3 +724,184 @@ dialog::backdrop {
   gap: 12px;
   padding: 4px 6px 6px 2px;
 }
+
+/* ---------- Boot + login screen ---------- */
+
+.boot {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.boot__card {
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+  padding: 24px;
+  text-align: center;
+}
+
+.boot__actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+.auth {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px 20px;
+}
+
+.auth__card {
+  display: grid;
+  gap: 16px;
+  width: min(440px, 100%);
+  padding: 28px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth__brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.auth__icon {
+  width: 64px;
+}
+
+.auth__logo {
+  display: block;
+  width: 130px;
+  margin-bottom: 2px;
+}
+
+.auth__tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: var(--bw) solid var(--ink);
+}
+
+.auth__tab {
+  padding: 10px;
+  border: 0;
+  background: var(--paper);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.auth__tab + .auth__tab {
+  border-left: var(--bw) solid var(--ink);
+}
+
+.auth__tab.is-active {
+  background: var(--yellow);
+}
+
+.auth__title {
+  font-size: 1.3rem;
+}
+
+.auth__form {
+  margin-top: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.auth__form .field {
+  margin-bottom: 0;
+}
+
+.auth__show {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.auth__msg {
+  padding: 10px 12px;
+  border: var(--bw-thin) solid var(--ink);
+  font-size: 0.78rem;
+}
+
+.auth__msg.is-error {
+  background: #ffd6d6;
+}
+
+.auth__msg.is-ok {
+  background: #c9ffe3;
+}
+
+.auth__or {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.auth__or::before,
+.auth__or::after {
+  content: '';
+  flex: 1;
+  border-top: var(--bw-thin) solid var(--ink);
+}
+
+.auth__links {
+  display: flex;
+  justify-content: center;
+}
+
+.link-btn {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 0.78rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- Top bar: account ---------- */
+
+.user-box {
+  display: grid;
+  justify-items: end;
+  align-content: center;
+  gap: 2px;
+  font-size: 0.72rem;
+}
+
+.user-box__email {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.user-box__status {
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 0.68rem;
+  opacity: 0.7;
+  cursor: default;
+}
+
+.user-box__status[data-status='error'] {
+  color: #c00000;
+  opacity: 1;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
