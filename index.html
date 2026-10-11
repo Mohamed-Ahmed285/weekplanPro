@@ -36,6 +36,7 @@
         </div>
       </div>
       <div class="topbar__actions">
+        <button type="button" class="btn btn--green" data-action="settings">&#9881; Settings</button>
         <button type="button" class="btn btn--pink" data-action="clear-week">Clear Week</button>
         <button type="button" class="btn btn--white" data-action="export">Export JSON</button>
         <label class="btn">
@@ -50,6 +51,10 @@
       <!-- Weekly board -->
       <main class="panel board">
         <div class="stats" id="stats" aria-label="Hours per category"></div>
+        <div class="range-bar">
+          <span class="range-bar__label">&#128339; <strong id="range-label"></strong></span>
+          <button type="button" class="btn btn--white btn--sm" data-action="edit-hours">Edit hours &#9998;</button>
+        </div>
         <div class="grid-wrap">
           <div class="grid" id="grid"></div>
         </div>
@@ -103,6 +108,21 @@
       <p class="muted">Pick a task for this slot.</p>
       <div class="dialog__list" data-modal-list></div>
     </div>
+  </dialog>
+
+  <!-- Settings -->
+  <dialog id="settings-dialog" class="dialog--wide" aria-labelledby="settings-title">
+    <form class="panel dialog__panel">
+      <div class="dialog__head">
+        <h3 id="settings-title">Settings</h3>
+        <button type="button" class="icon-btn" data-close aria-label="Close">×</button>
+      </div>
+      <div data-settings-body></div>
+      <div class="settings__footer">
+        <button type="button" class="btn btn--white" data-reset>Reset to defaults</button>
+        <button type="submit" class="btn btn--green">Save</button>
+      </div>
+    </form>
   </dialog>
 
   <!-- Toast -->

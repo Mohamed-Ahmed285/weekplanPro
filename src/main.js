@@ -3,6 +3,8 @@ import { renderStats } from './components/stats.js';
 import { renderGrid } from './components/grid.js';
 import { renderTaskPool } from './components/taskPool.js';
 import { initTaskForm } from './components/taskForm.js';
+import { initSettingsDialog } from './components/settingsDialog.js';
+import { shortRange } from './utils/time.js';
 import { openAssignModal, closeModal } from './components/modal.js';
 import { showToast } from './components/toast.js';
 import { downloadJson, readJsonFile } from './utils/file.js';
@@ -19,15 +21,24 @@ const els = {
   form: $('task-form'),
   dialog: $('assign-dialog'),
   importFile: $('import-file'),
+  rangeLabel: $('range-label'),
+  settingsDialog: $('settings-dialog'),
 };
 
 /* ---------- Rendering ---------- */
 
 function render(state) {
+  taskForm.setCategories(state.settings.categories);
+  els.rangeLabel.textContent = shortRange(state.settings.startHour, state.settings.endHour);
   renderStats(els.stats, state);
   renderGrid(els.grid, state);
   renderTaskPool(els.pool, els.count, state);
 }
+
+const taskForm = initTaskForm(els.form, (task) => {
+  store.addTask(task);
+  showToast('Task created');
+});
 
 store.subscribe(render);
 render(store.getState());
@@ -46,15 +57,29 @@ function openSlot(slot) {
     day,
     hour: Number(hour),
     tasks,
+    categories: store.getState().settings.categories,
     currentTaskId: schedule[slotKey(day, Number(hour))],
   });
 }
 
-/* ---------- Task form ---------- */
+/* ---------- Settings ---------- */
 
-initTaskForm(els.form, (task) => {
-  store.addTask(task);
-  showToast('Task created');
+const settings = initSettingsDialog({
+  dialog: els.settingsDialog,
+  getState: store.getState,
+  onSave: (next) => {
+    store.updateSettings(next);
+    showToast('Settings saved');
+  },
+});
+
+document.querySelector('[data-action="settings"]').addEventListener('click', () => settings.open());
+document
+  .querySelector('[data-action="edit-hours"]')
+  .addEventListener('click', () => settings.open('hours'));
+
+els.settingsDialog.addEventListener('click', (e) => {
+  if (e.target === els.settingsDialog || e.target.closest('[data-close]')) els.settingsDialog.close();
 });
 
 /* ---------- Task pool: delete + drag source ---------- */
@@ -151,8 +176,8 @@ document.querySelector('[data-action="clear-week"]').addEventListener('click', (
 });
 
 document.querySelector('[data-action="export"]').addEventListener('click', () => {
-  const { tasks, schedule } = store.getState();
-  downloadJson({ tasks, schedule }, `weekly-schedule-${new Date().toISOString().slice(0, 10)}.json`);
+  const { tasks, schedule, settings } = store.getState();
+  downloadJson({ tasks, schedule, settings }, `weekly-schedule-${new Date().toISOString().slice(0, 10)}.json`);
   showToast('Schedule exported');
 });
 
@@ -167,7 +192,7 @@ els.importFile.addEventListener('change', async (e) => {
     if (!valid) {
       alert('Invalid file format.');
     } else {
-      store.replaceAll({ tasks: data.tasks, schedule: data.schedule });
+      store.replaceAll({ tasks: data.tasks, schedule: data.schedule, settings: data.settings });
       showToast('Schedule imported');
     }
   } catch {

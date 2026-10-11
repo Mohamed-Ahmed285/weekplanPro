@@ -1,15 +1,14 @@
 export const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 export const DAY_SHORT = ['MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT', 'SUN'];
 
-// 6 AM through 5 AM the following day
-export const HOURS = Array.from({ length: 24 }, (_, i) => i + 6);
-
 // Same keys as the original single-file version, so existing saved data keeps working.
 export const STORAGE_KEYS = {
   tasks: 'weekplan_tasks',
   schedule: 'weekplan_schedule',
+  settings: 'weekplan_settings',
 };
 
+// Defaults for the customizable categories (max 4, see settings.js).
 export const CATEGORIES = [
   { id: 'Work', label: 'Work / Study', color: '#FFE600' },
   { id: 'Health', label: 'Health / Fitness', color: '#00F58A' },

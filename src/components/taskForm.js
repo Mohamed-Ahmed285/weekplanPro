@@ -1,11 +1,10 @@
-import { CATEGORIES, SWATCHES } from '../constants.js';
+import { SWATCHES } from '../constants.js';
+import { escapeHtml } from '../utils/dom.js';
 
 /** Fills the category select + color swatches and wires up submit. */
 export function initTaskForm(form, onCreate) {
   const select = form.querySelector('#task-category');
   const swatches = form.querySelector('#swatches');
-
-  select.innerHTML = CATEGORIES.map((c) => `<option value="${c.id}">${c.label}</option>`).join('');
 
   swatches.innerHTML = SWATCHES.map(
     (color, i) => `
@@ -30,4 +29,15 @@ export function initTaskForm(form, onCreate) {
     form.elements.title.value = '';
     form.elements.title.focus();
   });
+
+  return {
+    /** Rebuilds the category options, keeping the current pick when it still exists. */
+    setCategories(categories) {
+      const previous = select.value;
+      select.innerHTML = categories
+        .map((c) => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.label)}</option>`)
+        .join('');
+      if (categories.some((c) => c.id === previous)) select.value = previous;
+    },
+  };
 }

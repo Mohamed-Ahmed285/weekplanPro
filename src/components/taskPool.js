@@ -1,6 +1,8 @@
+import { categoryMap } from '../settings.js';
 import { escapeHtml, safeColor } from '../utils/dom.js';
 
-export function renderTaskPool(el, countEl, { tasks }) {
+export function renderTaskPool(el, countEl, { tasks, settings }) {
+  const cats = categoryMap(settings.categories);
   countEl.textContent = tasks.length;
 
   if (tasks.length === 0) {
@@ -16,7 +18,7 @@ export function renderTaskPool(el, countEl, { tasks }) {
           <span class="task__dot" style="--dot: ${safeColor(task.color)}"></span>
           <div class="task__body">
             <p class="task__title">${title}</p>
-            <p class="task__cat">${escapeHtml(task.category)}</p>
+            <p class="task__cat">${escapeHtml(cats.get(task.category)?.label)}</p>
           </div>
           <button type="button" class="task__del" data-delete-task="${escapeHtml(task.id)}"
                   aria-label="Delete ${title}">×</button>
