@@ -25,9 +25,9 @@ export function initAuthScreen(root, { onRecovered }) {
     root.innerHTML = `
       <div class="auth__card panel">
         <div class="auth__brand">
-          <img src="./images/icon.png" alt="" class="auth__icon" />
+          <img src="/images/icon.png" alt="" class="auth__icon" />
           <div>
-            <img src="./images/weekplan.png" alt="WeekPlan" class="auth__logo" />
+            <img src="/images/weekplan.png" alt="WeekPlan" class="auth__logo" />
             <p class="muted">Organize your hours, optimize your week.</p>
           </div>
         </div>
