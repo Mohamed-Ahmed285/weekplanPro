@@ -1,7 +1,7 @@
 .app {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 28px 28px 56px;
+  padding: 13px 56px 28px;
+  background-color: #fff;
+  border-bottom: solid 4px #1e2939;
 }
 
 /* ---------- Top bar ---------- */
@@ -9,10 +9,11 @@
 .topbar {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
-  margin-bottom: 28px;
+  /* margin-bottom: 28px; */
+
 }
 
 .topbar__title {
@@ -35,6 +36,12 @@
 }
 
 /* ---------- Two-column layout ---------- */
+.container {
+  zoom: 0.9;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 28px 56px 56px;
+}
 
 .layout {
   display: grid;
