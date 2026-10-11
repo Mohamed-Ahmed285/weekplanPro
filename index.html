@@ -41,18 +41,26 @@
         </div>
       </div>
       <div class="topbar__actions">
-        <div class="user-box">
-          <span class="user-box__email" id="user-email"></span>
-          <button type="button" class="user-box__status" id="save-status" data-status="saved"></button>
+        <div class="topbar__menu" id="topbar-menu">
+          <div class="user-box">
+            <span class="user-box__email" id="user-email"></span>
+            <button type="button" class="user-box__status" id="save-status" data-status="saved"></button>
+          </div>
+          <button type="button" class="btn btn--green" data-action="settings">&#9881; Settings</button>
+          <button type="button" class="btn btn--pink" data-action="clear-week">Clear Week</button>
+          <button type="button" class="btn btn--white" data-action="export">Export JSON</button>
+          <label class="btn">
+            Import
+            <input type="file" id="import-file" accept=".json,application/json" hidden />
+          </label>
+          <button type="button" class="btn btn--white" data-action="logout">Log out</button>
         </div>
-        <button type="button" class="btn btn--green" data-action="settings">&#9881; Settings</button>
-        <button type="button" class="btn btn--pink" data-action="clear-week">Clear Week</button>
-        <button type="button" class="btn btn--white" data-action="export">Export JSON</button>
-        <label class="btn">
-          Import
-          <input type="file" id="import-file" accept=".json,application/json" hidden />
-        </label>
-        <button type="button" class="btn btn--white" data-action="logout">Log out</button>
+
+        <button type="button" class="mobile-menu-toggle" id="mobile-menu-toggle" aria-expanded="false" aria-controls="topbar-menu" aria-label="Toggle navigation menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
       </div>
     </header>
   </div>

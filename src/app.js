@@ -17,6 +17,8 @@ import { createSaver } from './cloud.js';
  */
 export function startApp({ user, initial, onLogout }) {
   const statusEl = document.getElementById('save-status');
+  const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+  const topbarMenu = document.getElementById('topbar-menu');
   const STATUS_TEXT = { saving: 'Saving…', saved: 'Saved ✓', error: 'Not saved. Click to retry' };
   const saver = createSaver(user.id, (status) => {
     statusEl.textContent = STATUS_TEXT[status];
@@ -25,6 +27,32 @@ export function startApp({ user, initial, onLogout }) {
 
   document.getElementById('user-email').textContent = user.email ?? '';
   statusEl.addEventListener('click', () => saver.retry());
+
+  function closeMobileMenu() {
+    topbarMenu.classList.remove('is-open');
+    mobileMenuToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMobileMenu() {
+    const isOpen = topbarMenu.classList.toggle('is-open');
+    mobileMenuToggle.setAttribute('aria-expanded', String(isOpen));
+  }
+
+  mobileMenuToggle.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleMobileMenu();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!topbarMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+      closeMobileMenu();
+    }
+  });
+
+  topbarMenu.addEventListener('click', () => {
+    if (window.innerWidth <= 760) closeMobileMenu();
+  });
+
   window.addEventListener('beforeunload', (e) => {
     if (saver.hasUnsaved()) e.preventDefault(); // warn instead of silently losing the last edit
   });
