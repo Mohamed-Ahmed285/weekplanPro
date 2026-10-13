@@ -1,8 +1,8 @@
 import { DAYS, DAY_SHORT } from '../constants.js';
-import { categoryMap, getHours } from '../settings.js';
+import { categoryMap, getSlots } from '../settings.js';
 import { slotKey } from '../store.js';
 import { escapeHtml, safeColor } from '../utils/dom.js';
-import { formatHour, todayIndex } from '../utils/time.js';
+import { formatTime, todayIndex } from '../utils/time.js';
 
 function renderBlock(task, categoryLabel) {
   const title = escapeHtml(task.title);
@@ -28,18 +28,18 @@ export function renderGrid(el, { tasks, schedule, settings }) {
         </div>`,
     ).join('');
 
-  const rows = getHours(settings).map((hour) => {
+  const rows = getSlots(settings).map(({ minute }) => {
     const cells = DAYS.map((day, i) => {
-      const task = byId.get(schedule[slotKey(day, hour)]);
-      const label = `${day} ${formatHour(hour)}${task ? `: ${escapeHtml(task.title)}` : ', empty'}`;
+      const task = byId.get(schedule[slotKey(day, minute)]);
+      const label = `${day} ${formatTime(minute)}${task ? `: ${escapeHtml(task.title)}` : ', empty'}`;
       return `
         <div class="slot${i === today ? ' is-today' : ''}" role="button" tabindex="0"
-             data-day="${day}" data-hour="${hour}" aria-label="${label}">
+             data-day="${day}" data-minute="${minute}" aria-label="${label}">
           ${task ? renderBlock(task, cats.get(task.category)?.label) : '<span class="slot__plus" aria-hidden="true">+</span>'}
         </div>`;
     }).join('');
 
-    return `<div class="grid__time">${formatHour(hour)}</div>${cells}`;
+    return `<div class="grid__time">${formatTime(minute)}</div>${cells}`;
   }).join('');
 
   el.innerHTML = header + rows;

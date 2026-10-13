@@ -26,7 +26,37 @@
 </head>
 
 <body>
-  <div id="boot" class="boot"><p>Loading…</p></div>
+  <div id="boot" class="boot" role="status" aria-live="polite" aria-busy="true">
+    <span class="sr-only">Loading your schedule…</span>
+    <div class="topbar-contanier" aria-hidden="true">
+      <div class="topbar">
+        <div class="logo">
+          <span class="sk sk--logo"></span>
+          <div class="sk-stack"><span class="sk sk--title"></span><span class="sk sk--line"></span></div>
+        </div>
+        <div class="sk-actions"><span class="sk sk--btn"></span><span class="sk sk--btn"></span><span class="sk sk--btn"></span></div>
+      </div>
+    </div>
+    <div class="container" aria-hidden="true">
+      <div class="layout">
+        <div class="panel board">
+          <div class="stats"><div class="stat sk-card"><span class="sk sk--chip"></span><span class="sk sk--num"></span></div><div class="stat sk-card"><span class="sk sk--chip"></span><span class="sk sk--num"></span></div><div class="stat sk-card"><span class="sk sk--chip"></span><span class="sk sk--num"></span></div><div class="stat sk-card"><span class="sk sk--chip"></span><span class="sk sk--num"></span></div></div>
+          <div class="range-bar"><span class="sk sk--pill"></span><span class="sk sk--btn sk--btn-sm"></span></div>
+          <div class="grid-wrap"><div class="grid sk-grid"><span class="sk sk--corner"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--day"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--time"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span><span class="sk sk--cell"></span></div></div>
+        </div>
+        <aside class="panel sidebar sk-sidebar">
+          <div class="sidebar__section">
+            <span class="sk sk--title"></span>
+            <span class="sk sk--line"></span>
+            <span class="sk sk--field"></span>
+            <span class="sk sk--field"></span>
+            <span class="sk sk--btn sk--btn-block"></span>
+          </div>
+          <div class="sidebar__section sidebar__section--grow"><span class="sk sk--task"></span><span class="sk sk--task"></span><span class="sk sk--task"></span><span class="sk sk--task"></span></div>
+        </aside>
+      </div>
+    </div>
+  </div>
   <main id="auth-screen" class="auth" hidden></main>
 
   <div id="app" hidden>
@@ -71,7 +101,7 @@
         <div class="stats" id="stats" aria-label="Hours per category"></div>
         <div class="range-bar">
           <span class="range-bar__label">&#128339; <strong id="range-label"></strong></span>
-          <button type="button" class="btn btn--white btn--sm" data-action="edit-hours">Edit hours &#9998;</button>
+          <button type="button" class="btn btn--white btn--sm" data-action="edit-hours">Edit hours &amp; slots &#9998;</button>
         </div>
         <div class="grid-wrap">
           <div class="grid" id="grid"></div>

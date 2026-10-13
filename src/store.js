@@ -1,7 +1,15 @@
 import { DEFAULT_TASKS } from './constants.js';
 import { DEFAULT_SETTINGS, normalizeSettings, normalizeTasks } from './settings.js';
 
-export const slotKey = (day, hour) => `${day}-${hour}`;
+/**
+ * Schedule key for a slot starting `minute` minutes after midnight.
+ * On-the-hour slots keep the original "Monday-6" format, so everything saved
+ * before custom slot lengths still resolves; others look like "Monday-6:30".
+ */
+export const slotKey = (day, minute) =>
+  minute % 60 === 0
+    ? `${day}-${minute / 60}`
+    : `${day}-${Math.floor(minute / 60)}:${String(minute % 60).padStart(2, '0')}`;
 
 const isObject = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -45,10 +53,10 @@ export function createStore(initial, onChange = () => {}) {
     },
 
     /** Pass `null` as taskId to empty the slot. */
-    assign(day, hour, taskId) {
+    assign(day, minute, taskId) {
       const schedule = { ...state.schedule };
-      if (taskId == null) delete schedule[slotKey(day, hour)];
-      else schedule[slotKey(day, hour)] = taskId;
+      if (taskId == null) delete schedule[slotKey(day, minute)];
+      else schedule[slotKey(day, minute)] = taskId;
       commit({ ...state, schedule });
     },
 
@@ -62,7 +70,7 @@ export function createStore(initial, onChange = () => {}) {
       commit({ tasks: normalizeTasks(tasks, next.categories), schedule, settings: next });
     },
 
-    /** Hours range + categories. Tasks of removed categories move to the first category. */
+    /** Hours range, slot length + categories. Tasks of removed categories move to the first category. */
     updateSettings(settings) {
       const next = normalizeSettings(settings);
       commit({ ...state, settings: next, tasks: normalizeTasks(state.tasks, next.categories) });

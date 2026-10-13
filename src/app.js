@@ -81,7 +81,11 @@ export function startApp({ user, initial, onLogout }) {
 
   function render(state) {
     taskForm.setCategories(state.settings.categories);
-    els.rangeLabel.textContent = shortRange(state.settings.startHour, state.settings.endHour);
+    els.rangeLabel.textContent = shortRange(
+      state.settings.startHour,
+      state.settings.endHour,
+      state.settings.slotMinutes,
+    );
     renderStats(els.stats, state);
     renderGrid(els.grid, state);
     renderTaskPool(els.pool, els.count, state);
@@ -97,20 +101,20 @@ export function startApp({ user, initial, onLogout }) {
 
   /* ---------- Actions ---------- */
 
-  function assign(day, hour, taskId) {
-    store.assign(day, hour, taskId);
+  function assign(day, minute, taskId) {
+    store.assign(day, minute, taskId);
     showToast(taskId ? 'Schedule updated' : 'Slot cleared');
   }
 
   function openSlot(slot) {
-    const { day, hour } = slot.dataset;
+    const { day, minute } = slot.dataset;
     const { tasks, schedule } = store.getState();
     openAssignModal({
       day,
-      hour: Number(hour),
+      minute: Number(minute),
       tasks,
       categories: store.getState().settings.categories,
-      currentTaskId: schedule[slotKey(day, Number(hour))],
+      currentTaskId: schedule[slotKey(day, Number(minute))],
     });
   }
 
@@ -162,7 +166,7 @@ export function startApp({ user, initial, onLogout }) {
     if (!slot) return;
 
     if (e.target.closest('[data-clear]')) {
-      assign(slot.dataset.day, Number(slot.dataset.hour), null);
+      assign(slot.dataset.day, Number(slot.dataset.minute), null);
       return;
     }
     openSlot(slot);
@@ -194,7 +198,7 @@ export function startApp({ user, initial, onLogout }) {
     if (!slot) return;
     e.preventDefault();
     const taskId = e.dataTransfer.getData('text/plain');
-    if (taskId) assign(slot.dataset.day, Number(slot.dataset.hour), taskId);
+    if (taskId) assign(slot.dataset.day, Number(slot.dataset.minute), taskId);
   });
 
   /* ---------- Assignment dialog ---------- */
@@ -206,14 +210,14 @@ export function startApp({ user, initial, onLogout }) {
       return;
     }
 
-    const { day, hour } = els.dialog.dataset;
+    const { day, minute } = els.dialog.dataset;
     const pick = e.target.closest('[data-pick]');
 
     if (pick) {
-      assign(day, Number(hour), pick.dataset.pick);
+      assign(day, Number(minute), pick.dataset.pick);
       closeModal();
     } else if (e.target.closest('[data-clear-slot]')) {
-      assign(day, Number(hour), null);
+      assign(day, Number(minute), null);
       closeModal();
     }
   });

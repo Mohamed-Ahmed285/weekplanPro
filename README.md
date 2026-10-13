@@ -8,6 +8,8 @@ and see how your hours split across categories.
 ## Features
 - Drag-and-drop weekly grid (or click a slot to assign a task)
 - Customizable day range: pick any start and end hour, including past midnight
+- Customizable slot length: any whole number of minutes from 5 to 240 (default 60). Stored as `settings.slotMinutes`; plans saved before it existed keep behaving as 60-minute slots, so no database migration is needed
+- Skeleton loading screen that mirrors the app layout while your plan loads
 - Up to 4 custom categories with your own names and colors, plus live hour totals
 - Email/password login with password reset (Supabase Auth)
 - Each user's tasks, schedule and settings saved to their own account, with row-level security

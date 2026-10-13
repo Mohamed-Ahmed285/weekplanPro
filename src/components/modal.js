@@ -1,15 +1,15 @@
 import { categoryMap } from '../settings.js';
 import { escapeHtml, safeColor } from '../utils/dom.js';
-import { formatHour } from '../utils/time.js';
+import { formatTime } from '../utils/time.js';
 
 const dialog = () => document.getElementById('assign-dialog');
 
-export function openAssignModal({ day, hour, tasks, categories, currentTaskId }) {
+export function openAssignModal({ day, minute, tasks, categories, currentTaskId }) {
   const cats = categoryMap(categories);
   const el = dialog();
   el.dataset.day = day;
-  el.dataset.hour = hour;
-  el.querySelector('[data-modal-title]').textContent = `${day} · ${formatHour(hour)}`;
+  el.dataset.minute = minute;
+  el.querySelector('[data-modal-title]').textContent = `${day} · ${formatTime(minute)}`;
 
   const clearButton = currentTaskId
     ? `<button type="button" class="pick pick--clear" data-clear-slot>Clear this slot</button>`

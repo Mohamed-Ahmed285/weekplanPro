@@ -12,6 +12,8 @@ function show(name) {
 
 function showBootError(text) {
   show('boot');
+  screens.boot.classList.add('boot--error');
+  screens.boot.removeAttribute('aria-busy');
   screens.boot.innerHTML = `
     <div class="panel boot__card">
       <p>${text}</p>
