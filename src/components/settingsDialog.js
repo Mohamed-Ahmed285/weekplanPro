@@ -1,13 +1,23 @@
 import { SWATCHES } from '../constants.js';
-import { DEFAULT_SETTINGS, MAX_CATEGORIES, MAX_LABEL_LENGTH, getHours } from '../settings.js';
+import {
+  DEFAULT_SETTINGS,
+  MAX_CATEGORIES,
+  MAX_LABEL_LENGTH,
+  MAX_SLOT_MINUTES,
+  MIN_SLOT_MINUTES,
+  getSlots,
+  isSlotMinutes,
+} from '../settings.js';
 import { escapeHtml } from '../utils/dom.js';
 import { describeRange, formatHour } from '../utils/time.js';
 
+const SLOT_PRESETS = [15, 30, 45, 60, 90, 120];
 const HOUR_OPTIONS = Array.from({ length: 24 }, (_, h) => h);
 
 const clone = (settings) => ({
   startHour: settings.startHour,
   endHour: settings.endHour,
+  slotMinutes: settings.slotMinutes,
   categories: settings.categories.map((c) => ({ ...c })),
 });
 
@@ -50,12 +60,20 @@ export function initSettingsDialog({ dialog, getState, onSave }) {
   let draft = clone(getState().settings);
 
   const updateSummary = () => {
-    const rows = getHours(draft).length;
-    body.querySelector('[data-range-summary]').textContent = describeRange(
+    const summary = body.querySelector('[data-range-summary]');
+    if (!isSlotMinutes(draft.slotMinutes)) {
+      summary.textContent = `Slot length must be a whole number from ${MIN_SLOT_MINUTES} to ${MAX_SLOT_MINUTES} minutes.`;
+      return;
+    }
+    summary.textContent = describeRange(
       draft.startHour,
       draft.endHour,
-      rows,
+      getSlots(draft).length,
+      draft.slotMinutes,
     );
+    body.querySelectorAll('[data-slot-preset]').forEach((btn) => {
+      btn.classList.toggle('is-active', Number(btn.dataset.slotPreset) === draft.slotMinutes);
+    });
   };
 
   function render() {
@@ -67,6 +85,18 @@ export function initSettingsDialog({ dialog, getState, onSave }) {
           ${hourSelect('start', 'From', draft.startHour)}
           <span class="range-row__arrow" aria-hidden="true">→</span>
           ${hourSelect('end', 'To (included)', draft.endHour)}
+        </div>
+        <div class="field">
+          <label for="set-slot">Slot length (minutes)</label>
+          <div class="slot-row">
+            <input class="input" id="set-slot" type="number" inputmode="numeric" required
+                   min="${MIN_SLOT_MINUTES}" max="${MAX_SLOT_MINUTES}" step="1"
+                   value="${Number.isNaN(draft.slotMinutes) ? '' : draft.slotMinutes}" data-slot />
+            ${SLOT_PRESETS.map(
+              (m) =>
+                `<button type="button" class="btn btn--white btn--sm slot-preset" data-slot-preset="${m}">${m}</button>`,
+            ).join('')}
+          </div>
         </div>
         <p class="hint" data-range-summary></p>
       </section>
@@ -97,11 +127,19 @@ export function initSettingsDialog({ dialog, getState, onSave }) {
   });
 
   body.addEventListener('input', (e) => {
-    if (e.target.matches('[data-cat-name]')) draft.categories[indexOf(e.target)].label = e.target.value;
+    if (e.target.matches('[data-slot]')) {
+      draft.slotMinutes = e.target.value === '' ? NaN : Number(e.target.value);
+      updateSummary();
+    } else if (e.target.matches('[data-cat-name]')) draft.categories[indexOf(e.target)].label = e.target.value;
   });
 
   body.addEventListener('click', (e) => {
-    if (e.target.closest('[data-cat-del]')) {
+    const preset = e.target.closest('[data-slot-preset]');
+    if (preset) {
+      draft.slotMinutes = Number(preset.dataset.slotPreset);
+      body.querySelector('[data-slot]').value = draft.slotMinutes;
+      updateSummary();
+    } else if (e.target.closest('[data-cat-del]')) {
       if (draft.categories.length <= 1) return;
       draft.categories.splice(indexOf(e.target), 1);
       render();
@@ -127,6 +165,7 @@ export function initSettingsDialog({ dialog, getState, onSave }) {
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+    if (!isSlotMinutes(draft.slotMinutes)) return; // the native min/max check normally catches this first
     const { tasks } = getState();
     const kept = new Set(draft.categories.map((c) => c.id));
     const moving = tasks.filter((t) => !kept.has(t.category)).length;
